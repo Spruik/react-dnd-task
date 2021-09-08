@@ -1,12 +1,12 @@
 export const initialBoardData = {
     items: {
-      'item-1': { id: 'item-1', content: 'Content of item 1.', marked: false},
-      'item-2': { id: 'item-2', content: 'Content of item 2.', marked: false},
-      'item-3': { id: 'item-3', content: 'Content of item 3.', marked: false},
-      'item-4': { id: 'item-4', content: 'Content of item 4.', marked: false},
-      'item-5': { id: 'item-5', content: 'Content of item 5.', marked: false},
-      'item-6': { id: 'item-6', content: 'Content of item 6.', marked: false},
-      'item-7': { id: 'item-7', content: 'Content of item 7.', marked: false}
+      'item-1': { id: 'item-1', content: 'Task 1 - Click here to edit.', marked: false},
+      'item-2': { id: 'item-2', content: 'Task 2 - Click here to edit.', marked: false},
+      'item-3': { id: 'item-3', content: 'Task 3 - Click here to edit.', marked: false},
+      'item-4': { id: 'item-4', content: 'Task 4 - Click here to edit.', marked: false},
+      'item-5': { id: 'item-5', content: 'Task 5 - Click here to edit.', marked: false},
+      'item-6': { id: 'item-6', content: 'Task 6 - Click here to edit.', marked: false},
+      'item-7': { id: 'item-7', content: 'Task 7 - Click here to edit.', marked: false}
     },
     columns: {
       'column-1': {
