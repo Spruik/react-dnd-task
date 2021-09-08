@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { DragDropContext } from 'react-beautiful-dnd'
+import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import styled from 'styled-components'
 
 // Import data for board
@@ -15,13 +15,19 @@ const BoardEl = styled.div`
   justify-content: space-between;
 `
 
+const BoardWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+`
+
 export class Board extends React.Component {
   // Initialize board state with board data
   state = initialBoardData
 
   // Handle drag & drop
   onDragEnd = (result: any) => {
-    const { source, destination, draggableId } = result
+    const { source, destination, draggableId, type } = result
 
     // Do nothing if item is dropped outside the list
     if (!destination) {
@@ -31,6 +37,19 @@ export class Board extends React.Component {
     // Do nothing if the item is dropped into the same place
     if (destination.droppableId === source.droppableId && destination.index === source.index) {
       return
+    }
+
+    if (type === 'column') {
+      const newColumnOrder = Array.from(this.state.columnsOrder);
+      newColumnOrder.splice(source.index, 1);
+      newColumnOrder.splice(destination.index, 0, draggableId);
+
+      const newState = {
+        ...this.state,
+        columnsOrder: newColumnOrder,
+      };
+      this.setState(newState);
+      return;
     }
 
     // Find column from which the item was dragged from
@@ -108,20 +127,101 @@ export class Board extends React.Component {
     }
   }
 
+  // Handle adding new task
+  onAddTask = (columnId: any) => {
+    var numItems = 0
+    for(var i in this.state.items) {
+      numItems++
+    }
+
+    const newId = numItems + 1
+    const newTaskId = "item-" + newId
+    const newTaskContent = "Content of item " + newId + " - Click here to edit."
+    const newTasks = {
+      ...this.state.items,
+      [newTaskId]: { id: newTaskId, content: newTaskContent }
+    }
+
+    const targetColumn = (this.state.columns as any)[columnId]
+    const newItemsIds = Array.from(targetColumn.itemsIds)
+    newItemsIds.splice(newItemsIds.length, 0, newTaskId)
+    const newColumn = {
+      ...targetColumn,
+      itemsIds: newItemsIds
+    }
+
+    const newState = {
+      ...this.state,
+      items: newTasks,
+      columns: {
+        ...this.state.columns,
+        [newColumn.id]: newColumn
+      }
+    }
+    
+    this.setState(newState)
+  }
+
+  onEditTask = (itemId: any, itemContent: any) => {
+    const targetItem = (this.state.items as any)[itemId]
+    const newItem = {
+      ...targetItem,
+      content: itemContent
+    }
+    
+    const newState = {
+      ...this.state,
+      items: {
+         ...this.state.items,
+         [newItem.id]: newItem
+      }
+    }
+    
+    this.setState(newState)
+  }
+  
+  onMarkTask = (itemId: any, marked: any) => {
+    const targetItem = (this.state.items as any)[itemId]
+    const newItem = {
+      ...targetItem,
+      marked: !marked
+    }
+    
+    const newState = {
+      ...this.state,
+      items: {
+         ...this.state.items,
+         [newItem.id]: newItem
+      }
+    }
+    
+    this.setState(newState)
+  }
+
   render() {
     return(
       <BoardEl>
         <DragDropContext onDragEnd={this.onDragEnd}>
-          {this.state.columnsOrder.map(columnId => {
-            // Get id of the current column
-            const column = (this.state.columns as any)[columnId]
+          <Droppable droppableId="all-columns" direction="horizontal" type="column">
+            {(provided) => (
+                <BoardWrapper {...provided.droppableProps} ref={provided.innerRef}>
+                  {
+                    this.state.columnsOrder.map((columnId, index) => {
+                      // Get id of the current column
+                      const column = (this.state.columns as any)[columnId]
 
-            // Get item belonging to the current column
-            const items = column.itemsIds.map((itemId: string) => (this.state.items as any)[itemId])
+                      // Get item belonging to the current column
+                      const items = column.itemsIds.map((itemId: string) => (this.state.items as any)[itemId])
 
-            // Render the BoardColumn component
-            return <BoardColumn key={column.id} column={column} items={items} />
-          })}
+                      // Render the BoardColumn component
+                      return <BoardColumn key={column.id} column={column} items={items} index={index} onAddTask={this.onAddTask} onEditTask={this.onEditTask} onMarkTask={this.onMarkTask}/>
+                    })
+                  }
+                  {provided.placeholder}
+                </BoardWrapper>
+              )
+            }
+          </Droppable>
         </DragDropContext>
       </BoardEl>
     )

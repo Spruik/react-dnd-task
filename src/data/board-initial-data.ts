@@ -1,32 +1,32 @@
 export const initialBoardData = {
     items: {
-      'item-1': { id: 'item-1', content: 'Content of item 1.'},
-      'item-2': { id: 'item-2', content: 'Content of item 2.'},
-      'item-3': { id: 'item-3', content: 'Content of item 3.'},
-      'item-4': { id: 'item-4', content: 'Content of item 4.'},
-      'item-5': { id: 'item-5', content: 'Content of item 5.'},
-      'item-6': { id: 'item-6', content: 'Content of item 6.'},
-      'item-7': { id: 'item-7', content: 'Content of item 7.'}
+      'item-1': { id: 'item-1', content: 'Content of item 1.', marked: false},
+      'item-2': { id: 'item-2', content: 'Content of item 2.', marked: false},
+      'item-3': { id: 'item-3', content: 'Content of item 3.', marked: false},
+      'item-4': { id: 'item-4', content: 'Content of item 4.', marked: false},
+      'item-5': { id: 'item-5', content: 'Content of item 5.', marked: false},
+      'item-6': { id: 'item-6', content: 'Content of item 6.', marked: false},
+      'item-7': { id: 'item-7', content: 'Content of item 7.', marked: false}
     },
     columns: {
       'column-1': {
         id: 'column-1',
-        title: 'Column 1',
+        title: 'To do list 1',
         itemsIds: ['item-1', 'item-2', 'item-3', 'item-4', 'item-5', 'item-6', 'item-7']
       },
       'column-2': {
         id: 'column-2',
-        title: 'Column 2',
+        title: 'To do list 2',
         itemsIds: []
       },
       'column-3': {
         id: 'column-3',
-        title: 'Column 3',
+        title: 'To do list 3',
         itemsIds: []
       },
       'column-4': {
         id: 'column-4',
-        title: 'Column 4',
+        title: 'To do list 4',
         itemsIds: []
       }
     },
