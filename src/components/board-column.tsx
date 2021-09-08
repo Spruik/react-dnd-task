@@ -23,6 +23,7 @@ type BoardColumnContentStylesProps = {
   isDraggingOver: boolean
 }
 
+// Define type for handling column wrapper style property when dragging column
 type BoardColumnWrapperStyleProps = {
   isDragging: boolean
 }
@@ -49,6 +50,7 @@ const BoardColumnTitle = styled.h2`
   margin: 12px 0px 12px 12px;
 `
 
+// Create style for button to add task
 const BoardColumnAddBtn = styled.button`
   font: 15px bold Arial, sans-serif;
   margin-left: auto;
@@ -65,6 +67,7 @@ const BoardColumnAddBtn = styled.button`
   }
 `
 
+// Plus icon
 const StyledIcon = styled(PlusIcon)`
   width: 15px;
   height: 15px;
@@ -73,6 +76,7 @@ const StyledIcon = styled(PlusIcon)`
   fill: White;
 `
 
+// Create style for column header
 const BoardColumnHeader = styled.div`
   display: flex;
   flex: 1;

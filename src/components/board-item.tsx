@@ -41,6 +41,7 @@ const BoardItemEl = styled.div<BoardItemStylesProps>`
   }
 `
 
+// Create style for wrapper for star icon
 const IconWrapper = styled.div`
   padding-top: 10px;
   padding-bottom: 10px;
@@ -54,6 +55,7 @@ const IconWrapper = styled.div`
   }
 `
 
+// Handle toggling of star icon
 const IconToggle = (props: any) => {
   return props.toggle ? <StarFillIcon/> : <StarIcon/>
 }
