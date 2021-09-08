@@ -33,6 +33,7 @@ const BoardColumnWrapper = styled.div<BoardColumnWrapperStyleProps>`
   margin: 8px;
   padding: 8px;
   background-color: ${props => props.isDragging ? '#ffe6e6' : '#e5eff5'};
+  border: ${(props) => props.isDragging ? '1.5px solid black' : '1px solid grey'};
   border-radius: 4px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 

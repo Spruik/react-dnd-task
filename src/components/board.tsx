@@ -136,7 +136,7 @@ export class Board extends React.Component {
 
     const newId = numItems + 1
     const newTaskId = "item-" + newId
-    const newTaskContent = "Content of item " + newId + " - Click here to edit."
+    const newTaskContent = "Task " + newId + " - Click here to edit."
     const newTasks = {
       ...this.state.items,
       [newTaskId]: { id: newTaskId, content: newTaskContent }
@@ -162,13 +162,14 @@ export class Board extends React.Component {
     this.setState(newState)
   }
 
+  // Handle editing task
   onEditTask = (itemId: any, itemContent: any) => {
     const targetItem = (this.state.items as any)[itemId]
     const newItem = {
       ...targetItem,
       content: itemContent
     }
-    
+
     const newState = {
       ...this.state,
       items: {
@@ -176,10 +177,11 @@ export class Board extends React.Component {
          [newItem.id]: newItem
       }
     }
-    
+
     this.setState(newState)
   }
-  
+
+  // Handle marking task
   onMarkTask = (itemId: any, marked: any) => {
     const targetItem = (this.state.items as any)[itemId]
     const newItem = {
