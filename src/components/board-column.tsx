@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Droppable, Draggable } from 'react-beautiful-dnd'
 import { ReactComponent as PlusIcon } from './plus-lg.svg'
 import styled from 'styled-components'
+import img from './wrinkled-paper.jpg'
 
 // Import BoardItem component
 import { BoardItem } from './board-item'
@@ -33,8 +34,8 @@ const BoardColumnWrapper = styled.div<BoardColumnWrapperStyleProps>`
   flex: 1 0 20%;
   margin: 8px;
   padding: 8px;
-  background-color: ${props => props.isDragging ? '#ffe6e6' : '#e5eff5'};
-  border: ${(props) => props.isDragging ? '1.5px solid black' : '1px solid grey'};
+  background-image: url(${img});
+  border: ${(props) => props.isDragging ? '5px solid DodgerBlue' : null};
   border-radius: 4px;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 
@@ -86,7 +87,7 @@ const BoardColumnHeader = styled.div`
 // Create styles for BoardColumnContent element
 const BoardColumnContent = styled.div<BoardColumnContentStylesProps>`
   min-height: 20px;
-  background-color: ${props => props.isDraggingOver ? '#aecde0' : null};
+  background-color: ${props => props.isDraggingOver ? 'rgba(174, 205, 224, 0.5)' : null};
   border-radius: 4px;
 `
 

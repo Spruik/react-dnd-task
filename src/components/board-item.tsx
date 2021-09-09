@@ -26,7 +26,7 @@ const BoardItemEl = styled.div<BoardItemStylesProps>`
   display: flex;
   flex: 1;
   padding: 8px;
-  background-color: ${(props) => props.isDragging ? '#ffe6e6' : '#fff'};
+  background-color: ${(props) => props.isDragging ? 'rgba(255,230,230,0.7)' : '#fff'};
   border: ${(props) => props.isDragging ? '1.5px solid black' : '1px solid silver'};
   border-radius: 4px;
   transition: background-color .25s ease-out;
