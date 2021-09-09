@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { createGlobalStyle } from 'styled-components'
-import img from './background.jpg'
+import img from './background-8.jpg'
 
 // Import main Board component
 import { Board } from './components/board'
@@ -10,6 +10,7 @@ import { Board } from './components/board'
 const GlobalStyle = createGlobalStyle`
   body {
     background-image: url(${img});
+    background-size: 100%;
   }
 `
 
