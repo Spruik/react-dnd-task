@@ -6,7 +6,8 @@
     "react": "^17.0.2",
     "react-beautiful-dnd": "^11.0.3",
     "react-dom": "^17.0.2",
-    "styled-components": "^4.2.0"
+    "styled-components": "^4.2.0",
+    "react-edit-text": "^4.2.0"
   },
   "devDependencies": {
     "@types/jest": "24.0.13",
@@ -15,6 +16,7 @@
     "@types/react-beautiful-dnd": "^11.0.2",
     "@types/react-dom": "16.8.4",
     "@types/styled-components": "^4.1.15",
+    "@types/react-edit-text": "4.0.1",
     "react-scripts": "3.0.1",
     "typescript": "^4.4.2"
   },
