@@ -17,7 +17,6 @@ const BoardEl = styled.div`
 
 const BoardWrapper = styled.div`
   display: flex;
-  flex-wrap: wrap;
   width: 100%;
 `
 

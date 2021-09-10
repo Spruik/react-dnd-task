@@ -31,7 +31,7 @@ type BoardColumnWrapperStyleProps = {
 
 // Create styles for BoardColumnWrapper element
 const BoardColumnWrapper = styled.div<BoardColumnWrapperStyleProps>`
-  flex: 1 0 20%;
+  flex: 1;
   margin: 8px;
   padding: 8px;
   background-image: url(${img});

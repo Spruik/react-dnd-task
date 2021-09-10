@@ -75,7 +75,7 @@ export const BoardItem = (props: BoardItemProps) => {
         >
           <EditText
             name="textbox"
-            style={{width: '350px', font: '20px Arial, sans-serif'}}
+            style={{width: '100%', font: '20px Arial, sans-serif'}}
             value={text}
             onChange={setText}
             onSave={() => {props.onEditTask(props.item.id, text)}}/>
