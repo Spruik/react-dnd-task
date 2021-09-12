@@ -1,69 +1,157 @@
-import * as React from 'react'
-import { Droppable } from 'react-beautiful-dnd'
-import styled from 'styled-components'
+import * as React from 'react';
+import { connect } from 'react-redux';
+import { Draggable, Droppable } from 'react-beautiful-dnd';
+import shortid from 'shortid';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { ADD_CARD, CHANGE_LIST_TITLE, DELETE_LIST, DELETE_LIST_MESSAGE } from '../actions/actions';
+import styled from 'styled-components';
 
+// Import BoardColumnEditor component
+import BoardColumnEditor from './board-column-editor';
+// Import BoardItemEditor component
+import BoardItemEditor from './board-item-editor';
 // Import BoardItem component
-import { BoardItem } from './board-item'
+import BoardItem from './board-item';
 
 // Define types for board column element properties
 type BoardColumnProps = {
-  key: string,
-  column: any,
-  items: any,
-}
+  listId: any;
+  dispatch: any;
+  list: any;
+  index: any;
+};
 
-// Define types for board column content style properties
-// This is necessary for TypeScript to accept the 'isDraggingOver' prop.
-type BoardColumnContentStylesProps = {
-  isDraggingOver: boolean
-}
+const BoardColumnContainer = styled.div`
+  background: #dfe3e6;
+  flex-shrink: 0;
+  width: 272px;
+  height: fit-content;
+  margin: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+`;
 
-// Create styles for BoardColumnWrapper element
-const BoardColumnWrapper = styled.div`
-  flex: 1;
-  padding: 8px;
-  background-color: #e5eff5;
-  border-radius: 4px;
+const BoardColumnTitle = styled.div`
+  cursor: pointer;
+  padding: 10px;
+  overflow-wrap: break-word;
+`;
 
-  & + & {
-    margin-left: 12px;
+const ToggleAddCard = styled.div`
+  cursor: pointer;
+  padding: 10px;
+  color: #6b808c;
+  border-radius: 0 0 10px 10px;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    background-color: rgba(9, 45, 66, 0.13);
+    color: #17394d;
+    text-decoration: underline;
   }
-`
+`;
 
-// Create styles for BoardColumnTitle element
-const BoardColumnTitle = styled.h2`
-  font: 14px sans-serif;
-  margin-bottom: 12px;
-`
+class BoardColumn extends React.Component<BoardColumnProps> {
+  state = {
+    editingTitle: false,
+    title: this.props.list ? this.props.list.title : '',
+    addingCard: false
+  };
 
-// Create styles for BoardColumnContent element
-const BoardColumnContent = styled.div<BoardColumnContentStylesProps>`
-  min-height: 20px;
-  background-color: ${props => props.isDraggingOver ? '#aecde0' : null};
-  border-radius: 4px;
-`
+  toggleAddingCard = () => this.setState({ addingCard: !this.state.addingCard });
 
-// Create and export the BoardColumn component
-export const BoardColumn: React.FC<BoardColumnProps> = (props) => {
-  return(
-    <BoardColumnWrapper>
-      <BoardColumnTitle>
-        {props.column.title}
-      </BoardColumnTitle>
+  addCard = async (cardText: any) => {
+    const { listId, dispatch } = this.props;
 
-      <Droppable droppableId={props.column.id}>
+    this.toggleAddingCard();
+
+    const cardId = shortid.generate();
+
+    dispatch({
+      type: ADD_CARD,
+      payload: { cardText, cardId, listId }
+    });
+  };
+
+  toggleEditingTitle = () => this.setState({ editingTitle: !this.state.editingTitle });
+
+  handleChangeTitle = (e: { target: { value: any } }) => this.setState({ title: e.target.value });
+
+  editListTitle = async () => {
+    const { listId, dispatch } = this.props;
+    const { title } = this.state;
+
+    this.toggleEditingTitle();
+
+    dispatch({
+      type: CHANGE_LIST_TITLE,
+      payload: { listId, listTitle: title }
+    });
+  };
+
+  deleteList = async () => {
+    const { listId, list, dispatch } = this.props;
+
+    if (window.confirm(DELETE_LIST_MESSAGE)) {
+      dispatch({
+        type: DELETE_LIST,
+        // @ts-ignore
+        payload: { listId, cards: list.cards }
+      });
+    }
+  };
+
+  render() {
+    const { list, index } = this.props;
+    const { editingTitle, addingCard, title } = this.state;
+
+    return (
+      // @ts-ignore
+      <Draggable draggableId={list._id} index={index}>
         {(provided, snapshot) => (
+          <BoardColumnContainer ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+            {editingTitle ? (
+              <BoardColumnEditor
+                title={title}
+                handleChangeTitle={this.handleChangeTitle}
+                saveList={this.editListTitle}
+                onClickOutside={this.editListTitle}
+                deleteList={this.deleteList}
+              />
+            ) : (
+              <BoardColumnTitle onClick={this.toggleEditingTitle}>{list.title}</BoardColumnTitle>
+            )}
+            <Droppable droppableId={list._id}>
+              {(provided, _snapshot) => (
+                <div ref={provided.innerRef}>
+                  {list.cards &&
+                    list.cards.map((cardId: any, index: number) => (
+                      <BoardItem key={cardId} cardId={cardId} index={index} listId={list._id} />
+                    ))}
 
-          <BoardColumnContent
-            {...provided.droppableProps}
-            ref={provided.innerRef}
-            isDraggingOver={snapshot.isDraggingOver}
-          >
-            {props.items.map((item: any, index: number) => <BoardItem key={item.id} item={item} index={index} />)}
-            {provided.placeholder}
-          </BoardColumnContent>
+                  {provided.placeholder}
+
+                  {addingCard ? (
+                    <BoardItemEditor onSave={this.addCard} onCancel={this.toggleAddingCard} adding />
+                  ) : (
+                    <ToggleAddCard onClick={this.toggleAddingCard}>
+                      <FontAwesomeIcon icon={faPlus} style={{ marginRight: 5 }} /> Add a card
+                    </ToggleAddCard>
+                  )}
+                </div>
+              )}
+            </Droppable>
+          </BoardColumnContainer>
         )}
-      </Droppable>
-    </BoardColumnWrapper>
-  )
+      </Draggable>
+    );
+  }
 }
+
+const mapStateToProps = (state: { listsById: { [x: string]: any } }, ownProps: { listId: string | number }) => ({
+  list: state.listsById[ownProps.listId]
+});
+
+export default connect(mapStateToProps)(BoardColumn);
