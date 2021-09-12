@@ -6,6 +6,7 @@ import styled from 'styled-components'
 type BoardItemProps = {
   index: number
   item: any
+  onEditModalShow: any
 }
 
 // Define types for board item element style properties
@@ -13,6 +14,7 @@ type BoardItemProps = {
 type BoardItemStylesProps = {
   isDragging: boolean
 }
+
 
 // Create style for board item element
 const BoardItemEl = styled.div<BoardItemStylesProps>`
@@ -24,7 +26,6 @@ const BoardItemEl = styled.div<BoardItemStylesProps>`
   &:hover {
     background-color: #f7fafc;
   }
-
   & + & {
     margin-top: 4px;
   }
@@ -32,6 +33,9 @@ const BoardItemEl = styled.div<BoardItemStylesProps>`
 
 // Create and export the BoardItem component
 export const BoardItem = (props: BoardItemProps) => {
+  console.log("props")
+  console.log(props)
+
     return <Draggable draggableId={props.item.id} index={props.index}>
       {(provided, snapshot) => (
         <BoardItemEl
@@ -39,9 +43,12 @@ export const BoardItem = (props: BoardItemProps) => {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
           isDragging={snapshot.isDragging}
-        >
+          onClick={(e)=>props.onEditModalShow()}
+          >
           {props.item.content}
         </BoardItemEl>
       )}
     </Draggable>
   }
+
+
