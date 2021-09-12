@@ -1,27 +1,49 @@
 import * as React from 'react'
-import { DragDropContext } from 'react-beautiful-dnd'
+import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import styled from 'styled-components'
+import Modal from 'react-modal'
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import { ModalColumnTitle } from "../styles"
 
 // Import data for board
 import { initialBoardData } from '../data/board-initial-data'
 
 // Import BoardColumn component
 import { BoardColumn } from './board-column'
+import { EditItemForm } from './EditItemForm'
+
 
 // Create styles board element properties
 const BoardEl = styled.div`
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
+  justify-content: space-between; 
 `
+
+// Edit Modal styles
+const customStyles = {
+  content: {
+    top: '35%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    width: '20%',
+    transform: 'translate(-40%, -10%)',
+    background: ' #e5eff5'
+    },
+  };
 
 export class Board extends React.Component {
   // Initialize board state with board data
   state = initialBoardData
 
-  // Handle drag & drop
+  // Handle drag & drop  
   onDragEnd = (result: any) => {
-    const { source, destination, draggableId } = result
+    console.log("result")
+    console.log(result)
+    
+    const { source, destination, draggableId,type } = result 
 
     // Do nothing if item is dropped outside the list
     if (!destination) {
@@ -33,6 +55,22 @@ export class Board extends React.Component {
       return
     }
 
+    if(type === "column"){
+      const newColumnIds = draggableId;
+      const newIndex = destination.index;
+      let newColumnOrder : any = this.state.columnsOrder
+      newColumnOrder.splice(source.index, 1);
+      newColumnOrder.splice(newIndex,0,newColumnIds);
+      // console.log("newColumnOrder")
+      // console.log(newColumnOrder)
+      this.setState({columnsOrder:newColumnOrder})
+    }
+    else 
+    {
+    // const newColumnOrder = this.state.columnsOrder;
+    // newColumnOrder.splice(source.index, 1);
+    // newColumnOrder.splice(destination.index,0,draggableId);
+    
     // Find column from which the item was dragged from
     const columnStart = (this.state.columns as any)[source.droppableId]
 
@@ -107,23 +145,142 @@ export class Board extends React.Component {
       this.setState(newState)
     }
   }
+  }
+
+  // Fetches last column id value (e.g. column-1, lastID = 1) 
+  getLastNumericId = () =>
+  {
+    const {items} = this.state;
+    if(items && Object.keys(items).length > 0)
+    {
+      let item;
+      for(item in items){}
+      
+      if(item) 
+      {
+      return item.split("-")[1];
+      }
+    }
+    return '0';
+  }
+
+  // displays Modal component 
+  showEditModal = (itemId:string,oldContent:string) =>
+  {
+    
+    this.setState({editVisible:true , currentEditableItemId: itemId,currentEditableContent: oldContent })
+  }
+ 
+  editItem = (text: string)=>
+  {
+    let {currentEditableItemId,items} = this.state;
+    const updatedItems : any = items;
+    updatedItems[currentEditableItemId].content = text;
+    items = updatedItems;
+    currentEditableItemId = '';
+    this.setState({currentEditableItemId,items,editVisible:false})
+  }
+
+  onAddNewCard = (cardText: string, columnId: string) =>
+  {
+    let {columns, items} = this.state;
+
+    // Finding item it
+    const lastId = this.getLastNumericId();
+    const currentId = parseInt(lastId) + 1;
+    const currentIdFull = "item-"+currentId;
+    // console.log("currentIdFull")
+    // console.log(currentIdFull)
+        
+    // board item (card) object with id and content(text) then save it into the items list
+    const card = {
+      id: currentIdFull,
+      content: cardText,
+    }
+
+    const updatedItems : any = items;
+    updatedItems[currentIdFull] = card;
+    items = updatedItems;
+
+    // console.log("updated items ")
+    // console.log(items)
+
+    // saves the item id into itemsIds list and update columns with updated values 
+    const updatedColumns: any = columns; 
+    const updatedColumn = updatedColumns[columnId]; 
+    updatedColumn.itemsIds.push(currentIdFull);
+    updatedColumns[columnId] = updatedColumn; 
+    columns = updatedColumns;
+    
+    // console.log("updated columns")
+    // console.log(columns)
+    
+    // save the state with the latest updated data
+    this.setState(columns)
+    this.setState(items)
+    
+    // console.log("add card text")
+    // console.log(cardText)
+    // console.log("column id ")
+    // console.log(columnId)
+
+  }
 
   render() {
+    // console.log("state")
+    // console.log(this.state)
+   // const dropId = 'droppable-1';
     return(
-      <BoardEl>
-        <DragDropContext onDragEnd={this.onDragEnd}>
-          {this.state.columnsOrder.map(columnId => {
+    <div>
+      
+      <Modal
+        isOpen = {this.state.editVisible}
+        style =  {customStyles}
+      >
+        <ModalColumnTitle><AssignmentIcon></AssignmentIcon>Editing Card</ModalColumnTitle>  
+        <EditItemForm 
+        oldContent={this.state.currentEditableContent} 
+        onModalCancel={()=> this.setState({currentEditableItemId:"",editVisible:false})} 
+        onAdd={(text)=>this.editItem(text)}></EditItemForm> 
+      </Modal>
+
+      <DragDropContext onDragEnd={this.onDragEnd}  >
+      <Droppable  droppableId="all-columns"
+          direction="horizontal"
+          type="column">
+          {(provided, snapshot) => (
+      <BoardEl {...provided.droppableProps}
+      ref={provided.innerRef}
+      >
+        {/* <DragDropContext onDragEnd={this.onDragEnd} > */}
+          {this.state.columnsOrder.map((columnId , index) => {
             // Get id of the current column
             const column = (this.state.columns as any)[columnId]
+            
+            // console.log("columns")
+            // console.log(column)
 
             // Get item belonging to the current column
             const items = column.itemsIds.map((itemId: string) => (this.state.items as any)[itemId])
+            // console.log("items")
+            // console.log(items)
 
             // Render the BoardColumn component
-            return <BoardColumn key={column.id} column={column} items={items} />
+            return <BoardColumn 
+              key={column.id} 
+              column={column} 
+              items={items} 
+              onAddNewCard={this.onAddNewCard} 
+              orderIndex={index}
+              onShowEditModal={(itemId,oldContent)=>this.showEditModal(itemId,oldContent)}/>
           })}
-        </DragDropContext>
+        {provided.placeholder}
+        {/* </DragDropContext> */}
       </BoardEl>
+          )}
+      </Droppable>
+      </DragDropContext>
+      </div>
     )
   }
 }
