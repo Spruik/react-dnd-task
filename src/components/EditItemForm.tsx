@@ -18,7 +18,8 @@ export const EditItemForm = ({ onAdd, onModalCancel,oldContent}: EditItemForm) =
         onAdd(text)
     }
 }
- 
+ console.log("text")
+
   if(!isEditted)
   {
     text = oldContent;

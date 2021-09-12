@@ -6,6 +6,7 @@ import AddIcon from '@material-ui/icons/Add'
 interface AddNewItemProps {
   onAdd(text: string): void;
   toggleButtonText: string;
+
 }
 
 export const AddNewItem = (props: AddNewItemProps) => {
@@ -18,7 +19,8 @@ export const AddNewItem = (props: AddNewItemProps) => {
         onAdd={(text) => {
           onAdd(text);
           setShowForm(false);
-        } } onCancelAdd={()=> console.log("close this add button")} 
+        } } 
+        onCancelAdd={()=>setShowForm(false)} 
         />
     );
   }
