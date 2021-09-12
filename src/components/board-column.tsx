@@ -1,6 +1,7 @@
 import * as React from 'react'
-import { Droppable } from 'react-beautiful-dnd'
+import { Droppable, Draggable } from 'react-beautiful-dnd'
 import styled from 'styled-components'
+import AddBoardItem from './add-board-item'
 
 // Import BoardItem component
 import { BoardItem } from './board-item'
@@ -10,6 +11,7 @@ type BoardColumnProps = {
   key: string,
   column: any,
   items: any,
+  colIndex: any, // Define column index
 }
 
 // Define types for board column content style properties
@@ -48,22 +50,47 @@ export const BoardColumn: React.FC<BoardColumnProps> = (props) => {
   return(
     <BoardColumnWrapper>
       <BoardColumnTitle>
-        {props.column.title}
+      {props.column.title}
       </BoardColumnTitle>
 
       <Droppable droppableId={props.column.id}>
         {(provided, snapshot) => (
-
           <BoardColumnContent
             {...provided.droppableProps}
             ref={provided.innerRef}
             isDraggingOver={snapshot.isDraggingOver}
           >
-            {props.items.map((item: any, index: number) => <BoardItem key={item.id} item={item} index={index} />)}
+            {props.items.map((item: any, index: number) => <BoardItem key={item.id} item={item} index={index}/>)}
             {provided.placeholder}
-          </BoardColumnContent>
+            </BoardColumnContent>
         )}
       </Droppable>
+      <AddBoardItem />
     </BoardColumnWrapper>
+    /* trying to use columns as a draggable object but failed for some reason
+
+      <Draggable draggableId={props.column.id} index={props.colIndex}>
+        {(provided) => {
+          <BoardColumnWrapper {...provided.draggableProps} ref={provided.innerRef}>
+            <BoardColumnTitle {...provided.dragHandleProps}>
+              {props.column.title}
+            </BoardColumnTitle>
+
+            <Droppable droppableId={props.column.id}>
+              {(provided, snapshot) => (
+              <BoardColumnContent
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                isDraggingOver={snapshot.isDraggingOver}
+              >
+                {props.items.map((item: any, index: number) => <BoardItem key={item.id} item={item} index={index} />)}
+                {provided.placeholder}
+              </BoardColumnContent>
+            )}
+            </Droppable>
+          </BoardColumnWrapper>
+        }}
+      </Draggable>
+    */
   )
 }
