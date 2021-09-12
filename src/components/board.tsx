@@ -1,129 +1,136 @@
-import * as React from 'react'
-import { DragDropContext } from 'react-beautiful-dnd'
-import styled from 'styled-components'
+import * as React from 'react';
+import { connect } from 'react-redux';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { MOVE_CARD, MOVE_LIST } from '../actions/actions';
+import styled from 'styled-components';
 
-// Import data for board
-import { initialBoardData } from '../data/board-initial-data'
-
+// Import AddColumn component
+import AddColumn from './add-column';
 // Import BoardColumn component
-import { BoardColumn } from './board-column'
+import BoardColumn from './board-column';
+
+type BoardProps = {
+  dispatch: any;
+  board: any;
+};
 
 // Create styles board element properties
 const BoardEl = styled.div`
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-`
+  margin-top: 15px;
+`;
 
-export class Board extends React.Component {
-  // Initialize board state with board data
-  state = initialBoardData
+const BoardContainer = styled.div`
+  height: 100%;
+  display: flex;
+  overflow-x: auto;
+`;
 
-  // Handle drag & drop
-  onDragEnd = (result: any) => {
-    const { source, destination, draggableId } = result
+const AddColumnContainer = styled.div`
+  width: 272px;
+  margin: 10px;
+  flex-shrink: 0;
+`;
 
-    // Do nothing if item is dropped outside the list
-    if (!destination) {
-      return
-    }
+const AddColumnButtonContainer = styled.div`
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  cursor: pointer;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 5px 8px;
+  transition: background-color 85ms ease-in, opacity 40ms ease-in, border-color 85ms ease-in;
+  height: fit-content;
 
-    // Do nothing if the item is dropped into the same place
-    if (destination.droppableId === source.droppableId && destination.index === source.index) {
-      return
-    }
-
-    // Find column from which the item was dragged from
-    const columnStart = (this.state.columns as any)[source.droppableId]
-
-    // Find column in which the item was dropped
-    const columnFinish = (this.state.columns as any)[destination.droppableId]
-
-    // Moving items in the same list
-    if (columnStart === columnFinish) {
-      // Get all item ids in currently active list
-      const newItemsIds = Array.from(columnStart.itemsIds)
-
-      // Remove the id of dragged item from its original position
-      newItemsIds.splice(source.index, 1)
-
-      // Insert the id of dragged item to the new position
-      newItemsIds.splice(destination.index, 0, draggableId)
-
-      // Create new, updated, object with data for columns
-      const newColumnStart = {
-        ...columnStart,
-        itemsIds: newItemsIds
-      }
-
-      // Create new board state with updated data for columns
-      const newState = {
-        ...this.state,
-        columns: {
-          ...this.state.columns,
-          [newColumnStart.id]: newColumnStart
-        }
-      }
-
-      // Update the board state with new data
-      this.setState(newState)
-    } else {
-      // Moving items from one list to another
-      // Get all item ids in source list
-      const newStartItemsIds = Array.from(columnStart.itemsIds)
-
-      // Remove the id of dragged item from its original position
-      newStartItemsIds.splice(source.index, 1)
-
-      // Create new, updated, object with data for source column
-      const newColumnStart = {
-        ...columnStart,
-        itemsIds: newStartItemsIds
-      }
-
-      // Get all item ids in destination list
-      const newFinishItemsIds = Array.from(columnFinish.itemsIds)
-
-      // Insert the id of dragged item to the new position in destination list
-      newFinishItemsIds.splice(destination.index, 0, draggableId)
-
-      // Create new, updated, object with data for destination column
-      const newColumnFinish = {
-        ...columnFinish,
-        itemsIds: newFinishItemsIds
-      }
-
-      // Create new board state with updated data for both, source and destination columns
-      const newState = {
-        ...this.state,
-        columns: {
-          ...this.state.columns,
-          [newColumnStart.id]: newColumnStart,
-          [newColumnFinish.id]: newColumnFinish
-        }
-      }
-
-      // Update the board state with new data
-      this.setState(newState)
-    }
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.4);
   }
+`;
+
+class Board extends React.Component<BoardProps> {
+  state = {
+    addingList: false
+  };
+
+  toggleAddingList = () => this.setState({ addingList: !this.state.addingList });
+
+  handleDragEnd = (result: any) => {
+    const { source, destination, type } = result;
+
+    // dropped outside the allowed zones
+    if (!destination) return;
+
+    const { dispatch } = this.props;
+
+    // Move list
+    if (type === 'COLUMN') {
+      // Prevent update if nothing has changed
+      if (source.index !== destination.index) {
+        dispatch({
+          type: MOVE_LIST,
+          payload: {
+            oldListIndex: source.index,
+            newListIndex: destination.index
+          }
+        });
+      }
+      return;
+    }
+
+    // Move card
+    if (source.index !== destination.index || source.droppableId !== destination.droppableId) {
+      dispatch({
+        type: MOVE_CARD,
+        payload: {
+          sourceListId: source.droppableId,
+          destListId: destination.droppableId,
+          oldCardIndex: source.index,
+          newCardIndex: destination.index
+        }
+      });
+    }
+  };
 
   render() {
-    return(
+    const { board } = this.props;
+    const { addingList } = this.state;
+
+    return (
       <BoardEl>
-        <DragDropContext onDragEnd={this.onDragEnd}>
-          {this.state.columnsOrder.map(columnId => {
-            // Get id of the current column
-            const column = (this.state.columns as any)[columnId]
+        <DragDropContext onDragEnd={this.handleDragEnd}>
+          <Droppable droppableId="board" direction="horizontal" type="COLUMN">
+            {(provided, snapshot) => (
+              <BoardContainer ref={provided.innerRef}>
+                {board.lists.map((listId: any, index: any) => {
+                  return <BoardColumn listId={listId} key={listId} index={index} />;
+                })}
 
-            // Get item belonging to the current column
-            const items = column.itemsIds.map((itemId: string) => (this.state.items as any)[itemId])
+                {provided.placeholder}
 
-            // Render the BoardColumn component
-            return <BoardColumn key={column.id} column={column} items={items} />
-          })}
+                <AddColumnContainer>
+                  {addingList ? (
+                    <AddColumn toggleAddingList={this.toggleAddingList} />
+                  ) : (
+                    <AddColumnButtonContainer onClick={this.toggleAddingList}>
+                      <FontAwesomeIcon icon={faPlus} style={{ marginRight: 5 }} /> Add a list
+                    </AddColumnButtonContainer>
+                  )}
+                </AddColumnContainer>
+              </BoardContainer>
+            )}
+          </Droppable>
         </DragDropContext>
       </BoardEl>
-    )
+    );
   }
 }
+
+const mapStateToProps = (state: { board: any }) => ({ board: state.board });
+
+export default connect(mapStateToProps)(Board);
