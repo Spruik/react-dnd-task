@@ -14,10 +14,17 @@ export const NewItemForm = ({ onAdd,onCancelAdd }: NewItemFormProps) => {
 
   // Function for the onKeyPress event handler 
   const handleAddText = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  
     if (event.key === "Enter"){
+
+      if(text.length === 0){
+        onCancelAdd()
+      }else{
         onAdd(text)
+      }
+
     }
-}
+  }
 
  return (
     <NewItemFormContainer>
