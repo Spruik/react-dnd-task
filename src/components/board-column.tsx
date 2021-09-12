@@ -58,8 +58,8 @@ const BoardColumnContent = styled.div<BoardColumnContentStylesProps>`
 
 // Create and export the BoardColumn component
 export const BoardColumn: React.FC<BoardColumnProps> = (props) => {
-  console.log("props")
-  console.log(props)
+  // console.log("props")
+  // console.log(props)
   return  (
     <Draggable draggableId={props.column.id} index={props.orderIndex}>
       {provided => (

@@ -33,8 +33,8 @@ const BoardItemEl = styled.div<BoardItemStylesProps>`
 
 // Create and export the BoardItem component
 export const BoardItem = (props: BoardItemProps) => {
-  console.log("props")
-  console.log(props)
+  // console.log("props")
+  // console.log(props)
 
     return <Draggable draggableId={props.item.id} index={props.index}>
       {(provided, snapshot) => (

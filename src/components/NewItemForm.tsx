@@ -30,7 +30,7 @@ export const NewItemForm = ({ onAdd,onCancelAdd }: NewItemFormProps) => {
       />
       <table>
         <th><NewItemButton onClick={() => onAdd(text)}>Confirm Edit</NewItemButton></th>
-        <th><CancelButton onClick={()=>onCancelAdd}>Cancel</CancelButton></th>
+        <th><CancelButton onClick={()=>onCancelAdd()}>Cancel</CancelButton></th>
       </table>
     </NewItemFormContainer>
   );

@@ -38,89 +38,12 @@ export class Board extends React.Component {
   // Initialize board state with board data
   state = initialBoardData
 
-  onColumnDragEnd = (result: any) =>
-  {
-    const { destination, source, draggableId, type } = result;
-
-    if (!destination) {
-      return;
-    }
-
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
-      return;
-    }
-
-    if (type === 'column') {
-      const newColumnOrder = Array.from(this.state.columnsOrder);
-      newColumnOrder.splice(source.index, 1);
-      newColumnOrder.splice(destination.index, 0, draggableId);
-
-      const newState = {
-        ...this.state,
-        columnOrder: newColumnOrder,
-      };
-      this.setState(newState);
-      return;
-    }
-
-    const home = (this.state.columns as any)[source.droppableId];
-    const foreign = (this.state.columns as any)[destination.droppableId];
-
-    if (home === foreign) {
-      const newTaskIds = Array.from(home.taskIds);
-      newTaskIds.splice(source.index, 1);
-      newTaskIds.splice(destination.index, 0, draggableId);
-
-      const newHome = {
-        ...home,
-        taskIds: newTaskIds,
-      };
-
-      const newState = {
-        ...this.state,
-        columns: {
-          ...this.state.columns,
-          [newHome.id]: newHome,
-        },
-      };
-
-      this.setState(newState);
-      return;
-    }
-
-    // moving from one list to another
-    const homeTaskIds = Array.from(home.taskIds);
-    homeTaskIds.splice(source.index, 1);
-    const newHome = {
-      ...home,
-      taskIds: homeTaskIds,
-    };
-
-    const foreignTaskIds = Array.from(foreign.taskIds);
-    foreignTaskIds.splice(destination.index, 0, draggableId);
-    const newForeign = {
-      ...foreign,
-      taskIds: foreignTaskIds,
-    };
-
-    const newState = {
-      ...this.state,
-      columns: {
-        ...this.state.columns,
-        [newHome.id]: newHome,
-        [newForeign.id]: newForeign,
-      },
-    };
-    this.setState(newState);
-  };
-
-
   // Handle drag & drop  
   onDragEnd = (result: any) => {
-    const { source, destination, draggableId } = result
+    console.log("result")
+    console.log(result)
+    
+    const { source, destination, draggableId,type } = result 
 
     // Do nothing if item is dropped outside the list
     if (!destination) {
@@ -132,6 +55,22 @@ export class Board extends React.Component {
       return
     }
 
+    if(type === "column"){
+      const newColumnIds = draggableId;
+      const newIndex = destination.index;
+      let newColumnOrder : any = this.state.columnsOrder
+      newColumnOrder.splice(source.index, 1);
+      newColumnOrder.splice(newIndex,0,newColumnIds);
+      // console.log("newColumnOrder")
+      // console.log(newColumnOrder)
+      this.setState({columnsOrder:newColumnOrder})
+    }
+    else 
+    {
+    // const newColumnOrder = this.state.columnsOrder;
+    // newColumnOrder.splice(source.index, 1);
+    // newColumnOrder.splice(destination.index,0,draggableId);
+    
     // Find column from which the item was dragged from
     const columnStart = (this.state.columns as any)[source.droppableId]
 
@@ -206,6 +145,7 @@ export class Board extends React.Component {
       this.setState(newState)
     }
   }
+  }
 
   // Fetches last column id value (e.g. column-1, lastID = 1) 
   getLastNumericId = () =>
@@ -249,8 +189,8 @@ export class Board extends React.Component {
     const lastId = this.getLastNumericId();
     const currentId = parseInt(lastId) + 1;
     const currentIdFull = "item-"+currentId;
-    console.log("currentIdFull")
-    console.log(currentIdFull)
+    // console.log("currentIdFull")
+    // console.log(currentIdFull)
         
     // board item (card) object with id and content(text) then save it into the items list
     const card = {
@@ -262,8 +202,8 @@ export class Board extends React.Component {
     updatedItems[currentIdFull] = card;
     items = updatedItems;
 
-    console.log("updated items ")
-    console.log(items)
+    // console.log("updated items ")
+    // console.log(items)
 
     // saves the item id into itemsIds list and update columns with updated values 
     const updatedColumns: any = columns; 
@@ -272,23 +212,23 @@ export class Board extends React.Component {
     updatedColumns[columnId] = updatedColumn; 
     columns = updatedColumns;
     
-    console.log("updated columns")
-    console.log(columns)
+    // console.log("updated columns")
+    // console.log(columns)
     
     // save the state with the latest updated data
     this.setState(columns)
     this.setState(items)
     
-    console.log("add card text")
-    console.log(cardText)
-    console.log("column id ")
-    console.log(columnId)
+    // console.log("add card text")
+    // console.log(cardText)
+    // console.log("column id ")
+    // console.log(columnId)
 
   }
 
   render() {
-    console.log("state")
-    console.log(this.state)
+    // console.log("state")
+    // console.log(this.state)
    // const dropId = 'droppable-1';
     return(
     <div>
@@ -304,7 +244,7 @@ export class Board extends React.Component {
         onAdd={(text)=>this.editItem(text)}></EditItemForm> 
       </Modal>
 
-      <DragDropContext onDragEnd={this.onColumnDragEnd} >
+      <DragDropContext onDragEnd={this.onDragEnd}  >
       <Droppable  droppableId="all-columns"
           direction="horizontal"
           type="column">
@@ -312,18 +252,18 @@ export class Board extends React.Component {
       <BoardEl {...provided.droppableProps}
       ref={provided.innerRef}
       >
-        <DragDropContext onDragEnd={this.onDragEnd} >
+        {/* <DragDropContext onDragEnd={this.onDragEnd} > */}
           {this.state.columnsOrder.map((columnId , index) => {
             // Get id of the current column
             const column = (this.state.columns as any)[columnId]
             
-            console.log("columns")
-            console.log(column)
+            // console.log("columns")
+            // console.log(column)
 
             // Get item belonging to the current column
             const items = column.itemsIds.map((itemId: string) => (this.state.items as any)[itemId])
-            console.log("items")
-            console.log(items)
+            // console.log("items")
+            // console.log(items)
 
             // Render the BoardColumn component
             return <BoardColumn 
@@ -335,7 +275,7 @@ export class Board extends React.Component {
               onShowEditModal={(itemId,oldContent)=>this.showEditModal(itemId,oldContent)}/>
           })}
         {provided.placeholder}
-        </DragDropContext>
+        {/* </DragDropContext> */}
       </BoardEl>
           )}
       </Droppable>
