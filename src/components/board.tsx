@@ -113,6 +113,46 @@ export class Board extends React.Component {
 
   handleAddItem = (columnId: string) => {
     console.log("COLUMN ID:", columnId)
+    const column = this.state.columns as any
+    const columnStart = column[columnId]
+    
+    const itemIds = Array.from(columnStart.itemsIds) as any
+
+    let taskLength = 0
+
+    for (const property in column) {
+      console.log("WHAT IS PROPERTY", property)
+      //calculate the total tasks
+      taskLength += column[property].itemsIds.length
+    }
+
+    const index = taskLength + 1
+    console.log("WHAT IS TASK LENGTH", taskLength)
+
+    const newItemId = `item-${index}`
+    const content = `content of item ${index}.`
+    console.log("WHAT IS THE NEW ITEM", `${newItemId}: ${content}`)
+
+    itemIds.push(newItemId)
+
+    const newColumnStart = {
+      ...columnStart,
+      itemsIds: itemIds
+    }
+
+    const newState = {
+      ...this.state,
+      columns: {
+        ...this.state.columns,
+        [newColumnStart.id]: newColumnStart
+      },
+      items: {
+        ...this.state.items,
+        [newItemId]: { id: newItemId, content: content}
+      }
+    }
+    this.setState(newState)
+    return
   }
 
   render() {
