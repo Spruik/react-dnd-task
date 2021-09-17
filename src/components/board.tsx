@@ -66,8 +66,6 @@ export class Board extends React.Component {
         }
       }
 
-     
-
       // Update the board state with new data
       this.setState(newState)
     } else {
@@ -111,7 +109,7 @@ export class Board extends React.Component {
     }
   }
 
-  handleAddItem = (columnId: string) => {
+  handleAddItem = (itemText: string, columnId: string) => {
     console.log("COLUMN ID:", columnId)
     const column = this.state.columns as any
     const columnStart = column[columnId]
@@ -130,7 +128,7 @@ export class Board extends React.Component {
     console.log("WHAT IS TASK LENGTH", taskLength)
 
     const newItemId = `item-${index}`
-    const content = `content of item ${index}.`
+    const content = `Content of item ${index}.`
     console.log("WHAT IS THE NEW ITEM", `${newItemId}: ${content}`)
 
     itemIds.push(newItemId)
@@ -177,7 +175,7 @@ export class Board extends React.Component {
                 return <BoardColumn 
                   key={column.id} 
                   column={column}
-                  handleAddItem={() => this.handleAddItem(column.id)}
+                  handleAddItem={this.handleAddItem}
                   items={items} />
               })}
               {provided.placeholder}

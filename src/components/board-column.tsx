@@ -6,6 +6,7 @@ import { Button } from 'react-bootstrap';
 // Import BoardItem component
 import { BoardItem } from './board-item'
 import { NewItemForm } from './new-item-form'
+import AddNewItem from './add-new-item';
 
 
 // Define types for board column element properties
@@ -13,7 +14,7 @@ type BoardColumnProps = {
   key: string,
   column: any,
   items: any,
-  handleAddItem: (columnId: string) => void
+  handleAddItem: (itemText: string, columnId: string) => void
 }
 
 // Define types for board column content style properties
@@ -50,6 +51,8 @@ const BoardColumnContent = styled.div<BoardColumnContentStylesProps>`
 // Create and export the BoardColumn component
 export const BoardColumn: React.FC<BoardColumnProps> = (props) => {
   const [task, setTask] = useState<string>("")
+
+  console.log("COLUMN", props.column)
   return(
     <BoardColumnWrapper>
       <BoardColumnTitle>
@@ -70,7 +73,7 @@ export const BoardColumn: React.FC<BoardColumnProps> = (props) => {
           </BoardColumnContent>
         )}
       </Droppable>
-      <Button variant="primary" onClick={() => props.handleAddItem(props.column.id)}>Add task</Button>
+      <AddNewItem handleAdd={(e) => props.handleAddItem(e, props.column.id)} columnId={props.column.Id}></AddNewItem>
 
     </BoardColumnWrapper>
   )
