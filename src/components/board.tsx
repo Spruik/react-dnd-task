@@ -1,6 +1,7 @@
 import * as React from 'react'
-import { DragDropContext } from 'react-beautiful-dnd'
+import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import styled from 'styled-components'
+import { NewItemForm } from './new-item-form'
 
 // Import data for board
 import { initialBoardData } from '../data/board-initial-data'
@@ -18,11 +19,11 @@ const BoardEl = styled.div`
 export class Board extends React.Component {
   // Initialize board state with board data
   state = initialBoardData
-
+  
   // Handle drag & drop
   onDragEnd = (result: any) => {
     const { source, destination, draggableId } = result
-
+    console.log(result)
     // Do nothing if item is dropped outside the list
     if (!destination) {
       return
@@ -64,6 +65,8 @@ export class Board extends React.Component {
           [newColumnStart.id]: newColumnStart
         }
       }
+
+     
 
       // Update the board state with new data
       this.setState(newState)
@@ -108,22 +111,40 @@ export class Board extends React.Component {
     }
   }
 
-  render() {
-    return(
-      <BoardEl>
-        <DragDropContext onDragEnd={this.onDragEnd}>
-          {this.state.columnsOrder.map(columnId => {
-            // Get id of the current column
-            const column = (this.state.columns as any)[columnId]
-
-            // Get item belonging to the current column
-            const items = column.itemsIds.map((itemId: string) => (this.state.items as any)[itemId])
-
-            // Render the BoardColumn component
-            return <BoardColumn key={column.id} column={column} items={items} />
-          })}
-        </DragDropContext>
-      </BoardEl>
-    )
+  handleAddItem = (columnId: string) => {
+    console.log("COLUMN ID:", columnId)
   }
+
+  render() {
+    console.log(initialBoardData)
+    return (
+
+      <DragDropContext onDragEnd={this.onDragEnd}>
+        <Droppable 
+          droppableId="columns"    direction="horizontal" 
+          type="column">
+          {(provided, snapshot) => 
+            <BoardEl 
+              {...provided.droppableProps}
+              ref={provided.innerRef}>
+              {this.state.columnsOrder.map(columnId => {
+                // Get id of the current column
+                const column = (this.state.columns as any)[columnId]
+
+                // Get item belonging to the current column
+                const items = column.itemsIds.map((itemId: string) => (this.state.items as any)[itemId])
+                // Render the BoardColumn component
+                return <BoardColumn 
+                  key={column.id} 
+                  column={column}
+                  handleAddItem={() => this.handleAddItem(column.id)}
+                  items={items} />
+              })}
+              {provided.placeholder}
+              </BoardEl>
+            } 
+            </Droppable>
+
+            </DragDropContext>
+    )}
 }

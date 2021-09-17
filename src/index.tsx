@@ -4,6 +4,7 @@ import { createGlobalStyle } from 'styled-components'
 
 // Import main Board component
 import { Board } from './components/board'
+import { NewItemForm } from './components/new-item-form'
 
 // Use createGlobalStyle to change the background of 'body' element
 const GlobalStyle = createGlobalStyle`

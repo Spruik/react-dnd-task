@@ -1,15 +1,19 @@
-import * as React from 'react'
+import React, {useState} from 'react'
 import { Droppable } from 'react-beautiful-dnd'
 import styled from 'styled-components'
+import { Button } from 'react-bootstrap';
 
 // Import BoardItem component
 import { BoardItem } from './board-item'
+import { NewItemForm } from './new-item-form'
+
 
 // Define types for board column element properties
 type BoardColumnProps = {
   key: string,
   column: any,
   items: any,
+  handleAddItem: (columnId: string) => void
 }
 
 // Define types for board column content style properties
@@ -45,11 +49,13 @@ const BoardColumnContent = styled.div<BoardColumnContentStylesProps>`
 
 // Create and export the BoardColumn component
 export const BoardColumn: React.FC<BoardColumnProps> = (props) => {
+  const [task, setTask] = useState<string>("")
   return(
     <BoardColumnWrapper>
       <BoardColumnTitle>
         {props.column.title}
       </BoardColumnTitle>
+      
 
       <Droppable droppableId={props.column.id}>
         {(provided, snapshot) => (
@@ -64,6 +70,8 @@ export const BoardColumn: React.FC<BoardColumnProps> = (props) => {
           </BoardColumnContent>
         )}
       </Droppable>
+      <Button variant="primary" onClick={() => props.handleAddItem(props.column.id)}>Add task</Button>
+
     </BoardColumnWrapper>
   )
 }
