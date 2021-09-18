@@ -1,6 +1,11 @@
 import * as React from 'react'
 import { Draggable } from 'react-beautiful-dnd'
 import styled from 'styled-components'
+import { SvgIcon } from 'material-ui';
+import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 // Define types for board item element properties
 type BoardItemProps = {
@@ -16,11 +21,15 @@ type BoardItemStylesProps = {
 
 // Create style for board item element
 const BoardItemEl = styled.div<BoardItemStylesProps>`
+  display: flex;
   padding: 8px;
   background-color: ${(props) => props.isDragging ? '#d3e4ee' : '#fff'};
   border-radius: 4px;
   transition: background-color .25s ease-out;
-
+  > span {
+    width: 100%
+    flexGrow: 3;
+  }
   &:hover {
     background-color: #f7fafc;
   }
@@ -28,6 +37,19 @@ const BoardItemEl = styled.div<BoardItemStylesProps>`
   & + & {
     margin-top: 4px;
   }
+`
+
+const IconsContainer = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  align-items: right;
+
+  > div {
+    width: 30%
+    text-align: right;
+  }
+
 `
 
 // Create and export the BoardItem component
@@ -40,7 +62,23 @@ export const BoardItem = (props: BoardItemProps) => {
           ref={provided.innerRef}
           isDragging={snapshot.isDragging}
         >
+          <span>
           {props.item.content}
+          </span>
+          <IconsContainer>
+            <div className="edit">
+            <EditIcon/>
+            </div>
+
+            <div className="save">
+            <SaveIcon />
+            </div>
+
+            <div className="delete">
+              <DeleteIcon/>
+            </div>
+
+            </IconsContainer>
         </BoardItemEl>
       )}
     </Draggable>

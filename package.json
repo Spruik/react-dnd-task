@@ -6,6 +6,7 @@
     "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
     "@material-ui/icons": "^4.11.2",
+    "@mui/icons-material": "^5.0.0",
     "@mui/material": "^5.0.0",
     "@mui/styles": "^5.0.0",
     "@types/material-ui": "^0.21.9",
@@ -34,7 +35,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "json-server": "npx json-server --watch=true src/data/board-initial-data.ts --port 8000"
   },
   "eslintConfig": {
     "extends": [
