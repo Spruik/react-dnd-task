@@ -140,20 +140,32 @@ export class Board extends React.Component {
     // console.log("LAST ITEM NUMBER IS", `${index}: ${task}`)
 
     const newKey = `item-${index}`
-    const newItems = {
+    const targetColumn = this.state.columns["column-1"]
+
+    let newItem = {
       ...this.state,
       items: {
         ...this.state.items,
         [newKey]: {id: `${newKey}`, content: task}
-      }
+      },
     }
 
-    console.log("NEW ITEMS", newItems)
-    // this.setState(newItems)
+    let itemsIds = targetColumn.itemsIds.push(newKey)
+    
+    let newItemsIds = {
+      ...targetColumn,
+      itemsIds: itemsIds
+    }
+
+    console.log("NEW ITEMS IDS", newItemsIds)
+    if (task !== "") {
+      this.setState(newItem)
+      this.setState(newItemsIds)
+    }
   }
 
   render() {
-    console.log(initialBoardData.items)
+    console.log("NEW STATE", this.state)
     return (
 
       <DragDropContext onDragEnd={this.onDragEnd}>
@@ -175,7 +187,6 @@ export class Board extends React.Component {
                 return <BoardColumn 
                   key={column.id} 
                   column={column}
-                  data={this.state}
                   items={items} />
               })}
               {provided.placeholder}

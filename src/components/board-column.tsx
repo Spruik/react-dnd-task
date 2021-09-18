@@ -11,8 +11,7 @@ import { BoardItem } from './board-item'
 type BoardColumnProps = {
   key: string,
   column: any,
-  items: any,
-  data: Object
+  items: any
 }
 
 // Define types for board column content style properties
