@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import styled from 'styled-components'
-import { NewItemForm } from './new-item-form'
+import NewItemForm from './new-item-form'
 
 // Import data for board
 import { initialBoardData } from '../data/board-initial-data'
@@ -19,6 +19,8 @@ const BoardEl = styled.div`
 export class Board extends React.Component {
   // Initialize board state with board data
   state = initialBoardData
+
+  
   
   // Handle drag & drop
   onDragEnd = (result: any) => {
@@ -109,55 +111,53 @@ export class Board extends React.Component {
     }
   }
 
-  handleAddItem = (itemText: string, columnId: string) => {
-    console.log("COLUMN ID:", columnId)
-    const column = this.state.columns as any
-    const columnStart = column[columnId]
-    
-    const itemIds = Array.from(columnStart.itemsIds) as any
+  //get the index associated with the last item on the list
+  getLastItem = () => {
+    const allItems = Object.keys(this.state.items)
+    const lastItem = allItems[allItems.length -1]
+    //Split at the "-" e.g item-8
+    const splitItemName = lastItem.split("-")
+    console.log("splitItemName", splitItemName)
+    const lastItemNum = splitItemName[splitItemName.length - 1]
+    console.log("lastItemNum", lastItemNum)
+    // const testString = parseInt("Hello")
+    // console.log("TEST HELLO", testString)
 
-    let taskLength = 0
+    const lastItemNumAsInt = parseInt(lastItemNum)
 
-    for (const property in column) {
-      console.log("WHAT IS PROPERTY", property)
-      //calculate the total tasks
-      taskLength += column[property].itemsIds.length
+    if (lastItemNumAsInt === NaN) {
+      return 1
     }
 
-    const index = taskLength + 1
-    console.log("WHAT IS TASK LENGTH", taskLength)
+    return lastItemNumAsInt + 1
+  }
 
-    const newItemId = `item-${index}`
-    const content = `Content of item ${index}.`
-    console.log("WHAT IS THE NEW ITEM", `${newItemId}: ${content}`)
+  handleAddItem = (event: React.FormEvent, task: string) => {
+    event.preventDefault()
+    console.log("Hello!", task)
+    const index = this.getLastItem()
+    const items = this.state.items
+    // console.log("LAST ITEM NUMBER IS", `${index}: ${task}`)
 
-    itemIds.push(newItemId)
-
-    const newColumnStart = {
-      ...columnStart,
-      itemsIds: itemIds
-    }
-
-    const newState = {
+    const newKey = `item-${index}`
+    const newItems = {
       ...this.state,
-      columns: {
-        ...this.state.columns,
-        [newColumnStart.id]: newColumnStart
-      },
       items: {
         ...this.state.items,
-        [newItemId]: { id: newItemId, content: content}
+        [newKey]: {id: `${newKey}`, content: task}
       }
     }
-    this.setState(newState)
-    return
+
+    console.log("NEW ITEMS", newItems)
+    // this.setState(newItems)
   }
 
   render() {
-    console.log(initialBoardData)
+    console.log(initialBoardData.items)
     return (
 
       <DragDropContext onDragEnd={this.onDragEnd}>
+        <NewItemForm handleAddItem={this.handleAddItem}/> 
         <Droppable 
           droppableId="columns"    direction="horizontal" 
           type="column">
@@ -175,14 +175,14 @@ export class Board extends React.Component {
                 return <BoardColumn 
                   key={column.id} 
                   column={column}
-                  handleAddItem={this.handleAddItem}
+                  data={this.state}
                   items={items} />
               })}
               {provided.placeholder}
               </BoardEl>
             } 
             </Droppable>
-
+            
             </DragDropContext>
     )}
 }

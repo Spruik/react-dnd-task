@@ -5,8 +5,6 @@ import { Button } from 'react-bootstrap';
 
 // Import BoardItem component
 import { BoardItem } from './board-item'
-import { NewItemForm } from './new-item-form'
-import AddNewItem from './add-new-item';
 
 
 // Define types for board column element properties
@@ -14,7 +12,7 @@ type BoardColumnProps = {
   key: string,
   column: any,
   items: any,
-  handleAddItem: (itemText: string, columnId: string) => void
+  data: Object
 }
 
 // Define types for board column content style properties
@@ -27,9 +25,9 @@ type BoardColumnContentStylesProps = {
 const BoardColumnWrapper = styled.div`
   flex: 1;
   padding: 8px;
-  background-color: #e5eff5;
+  background-color: #f2f2f2;
   border-radius: 4px;
-
+  
   & + & {
     margin-left: 12px;
   }
@@ -37,12 +35,13 @@ const BoardColumnWrapper = styled.div`
 
 // Create styles for BoardColumnTitle element
 const BoardColumnTitle = styled.h2`
-  font: 14px sans-serif;
+  font-size: 14px
   margin-bottom: 12px;
 `
 
 // Create styles for BoardColumnContent element
 const BoardColumnContent = styled.div<BoardColumnContentStylesProps>`
+
   min-height: 20px;
   background-color: ${props => props.isDraggingOver ? '#aecde0' : null};
   border-radius: 4px;
@@ -73,8 +72,7 @@ export const BoardColumn: React.FC<BoardColumnProps> = (props) => {
           </BoardColumnContent>
         )}
       </Droppable>
-      <AddNewItem handleAdd={(e) => props.handleAddItem(e, props.column.id)} columnId={props.column.Id}></AddNewItem>
-
+         
     </BoardColumnWrapper>
   )
 }
