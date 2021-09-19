@@ -1,10 +1,10 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
 type InputComponentProps = {
     content: string
     isEditing: boolean
     setIsEditing: React.Dispatch<React.SetStateAction<boolean>>
-    handleEdit: any
+    saveEditedData: any,
   }
 
 /**
@@ -17,8 +17,9 @@ function useOutsideAlerter(props: InputComponentProps, ref: any) {
          */
         
         function handleClickOutside(event: MouseEvent) {
-            console.log("CURRENT REF", ref.current)
+            console.log("CURRENT REF", ref.current.value)
             if (ref && !ref.current.contains(event.target)) {
+                props.saveEditedData(ref.current.value)
                 props.setIsEditing(false)
             }
         }
@@ -28,6 +29,7 @@ function useOutsideAlerter(props: InputComponentProps, ref: any) {
         return () => {
             // Unbind the event listener on clean up
             document.removeEventListener("mousedown", handleClickOutside);
+           
         };
     }, [ref]);
 }
@@ -38,9 +40,10 @@ function useOutsideAlerter(props: InputComponentProps, ref: any) {
 
 
 export const InputComponent = (props: InputComponentProps) => {
+    const [input, setInput] = useState(props.content)
     const inputElement = useRef<HTMLInputElement | null>(null);
     useOutsideAlerter(props, inputElement);
 
-    return <input ref={inputElement} value={props.content} onChange={props.handleEdit}>
+    return <input ref={inputElement} value={input} onChange={(e) => {setInput(e.target.value)}}>
     </input>;
 }

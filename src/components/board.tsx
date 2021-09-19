@@ -164,17 +164,33 @@ export class Board extends React.Component {
     }
   }
 
-  onEditTask = (taskId: string, content: string) => {
-    const newTask = { id: taskId, content: content }
-    const newState = {
-      ...this.state,
-      items: {
-        ...this.state.items,
-        [taskId]: newTask
-      }
-    }
-    this.setState(newState)
+  handleEditItem = (itemId: string, content: string) => {
+    console.log("TASK TO EDIT", itemId, content)
+    // const items = this.state.items[itemId]
+    // const editedState = {
+    //   ...items,
+    //   [itemId]: {
+    //     id: itemId,
+    //     content: content
+    //   }
+    // }
+    // console.log("EDITED STATE", editedState)
+    // this.setState(editedState)
   }
+
+  // saveData = (item: string, content: string) => {
+  //   console.log("ITEM", item, "DATA to save", content)
+  //   const newState = {
+  //     ...this.state,
+  //     items: {
+  //       ...this.state.items,
+  //       [item]: {
+  //         [item]: content
+  //       }
+  //     }
+  //   }
+  //   this.setState(newState)
+  // }
 
   render() {
     console.log("NEW STATE", this.state)
@@ -201,7 +217,8 @@ export class Board extends React.Component {
                     key={column.id} 
                     column={column}
                     items={items} 
-                    onEditTask={this.onEditTask} 
+                    handleEditItem={this.handleEditItem}
+                    // saveData={this.saveData}
                     />
               })}
               {provided.placeholder}
