@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { Droppable } from 'react-beautiful-dnd'
+import { Droppable, Draggable } from 'react-beautiful-dnd'
 import styled from 'styled-components'
 import { Button } from 'react-bootstrap';
 
@@ -13,6 +13,7 @@ type BoardColumnProps = {
   column: any,
   items: any
   handleEditItem: any,
+  index: number
   // saveData: any
 }
 
@@ -50,17 +51,22 @@ const BoardColumnContent = styled.div<BoardColumnContentStylesProps>`
 
 // Create and export the BoardColumn component
 export const BoardColumn: React.FC<BoardColumnProps> = (props) => {
-  const [task, setTask] = useState<string>("")
 
   console.log("COLUMN", props.column)
   return(
-    <BoardColumnWrapper>
+    <Draggable draggableId={props.column.id} index={props.index}>
+      {(provided, snapshot) => (
+    <BoardColumnWrapper
+      {...provided.draggableProps}
+      {...provided.dragHandleProps}
+      ref={provided.innerRef}
+>
       <BoardColumnTitle>
         {props.column.title}
       </BoardColumnTitle>
       
 
-      <Droppable droppableId={props.column.id}>
+      <Droppable droppableId={props.column.id} type="item">
         {(provided, snapshot) => (
 
           <BoardColumnContent
@@ -80,7 +86,8 @@ export const BoardColumn: React.FC<BoardColumnProps> = (props) => {
           </BoardColumnContent>
         )}
       </Droppable>
-         
     </BoardColumnWrapper>
+    )}
+    </Draggable>
   )
 }

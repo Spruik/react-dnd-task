@@ -21,7 +21,6 @@ export class Board extends React.Component {
   state = initialBoardData
 
   
-  
   // Handle drag & drop
   onDragEnd = (result: any) => {
     const { source, destination, draggableId } = result
@@ -33,6 +32,21 @@ export class Board extends React.Component {
 
     // Do nothing if the item is dropped into the same place
     if (destination.droppableId === source.droppableId && destination.index === source.index) {
+      return
+    }
+
+    if (draggableId.includes('column')) {
+      const shufColOrder = this.state.columnsOrder
+      console.log("Columns order", shufColOrder, "draggableId", draggableId, "FROM SOURCE: ", source.index, "TO", destination.index)
+      shufColOrder.splice(source.index, 1)
+      shufColOrder.splice(destination.index, 0, draggableId)
+
+      const newState = {
+        ...this.state,
+        columnsOrder: shufColOrder
+      }
+      this.setState(newState)
+      console.log("New Columns order", newState.columnsOrder)
       return
     }
 
@@ -206,7 +220,7 @@ export class Board extends React.Component {
             <BoardEl 
               {...provided.droppableProps}
               ref={provided.innerRef}>
-              {this.state.columnsOrder.map(columnId => {
+              {this.state.columnsOrder.map((columnId, index) => {
                 // Get id of the current column
                 const column = (this.state.columns as any)[columnId]
 
@@ -216,7 +230,8 @@ export class Board extends React.Component {
                 return <BoardColumn 
                     key={column.id} 
                     column={column}
-                    items={items} 
+                    items={items}
+                    index={index} 
                     handleEditItem={this.handleEditItem}
                     // saveData={this.saveData}
                     />
