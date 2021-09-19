@@ -35,6 +35,8 @@ const BoardItemEl = styled.div<BoardItemStylesProps>`
   }
   &:hover {
     background-color: #f7fafc;
+    box-shadow: rgba(0, 0, 0, 0.35) 5px 5px 5px;
+    border: solid 1px #ccc;
   }
 
   & + & {
@@ -57,11 +59,15 @@ const IconsContainer = styled.div`
     color: red;
   }
 
-  .icon svg {
-    &:hover: {
+  svg {
+    color: #333
+    transition: color 0.5s;
+    &:hover {
       cursor: pointer;
+      color: red;
     }
   }
+  
 
 `
 
