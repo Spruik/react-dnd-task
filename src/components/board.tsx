@@ -164,6 +164,18 @@ export class Board extends React.Component {
     }
   }
 
+  onEditTask = (taskId: string, content: string) => {
+    const newTask = { id: taskId, content: content }
+    const newState = {
+      ...this.state,
+      items: {
+        ...this.state.items,
+        [taskId]: newTask
+      }
+    }
+    this.setState(newState)
+  }
+
   render() {
     console.log("NEW STATE", this.state)
     return (
@@ -171,7 +183,8 @@ export class Board extends React.Component {
       <DragDropContext onDragEnd={this.onDragEnd}>
         <NewItemForm handleAddItem={this.handleAddItem}/> 
         <Droppable 
-          droppableId="columns"    direction="horizontal" 
+          droppableId="columns"    
+          direction="horizontal" 
           type="column">
           {(provided, snapshot) => 
             <BoardEl 
@@ -185,9 +198,11 @@ export class Board extends React.Component {
                 const items = column.itemsIds.map((itemId: string) => (this.state.items as any)[itemId])
                 // Render the BoardColumn component
                 return <BoardColumn 
-                  key={column.id} 
-                  column={column}
-                  items={items} />
+                    key={column.id} 
+                    column={column}
+                    items={items} 
+                    onEditTask={this.onEditTask} 
+                    />
               })}
               {provided.placeholder}
               </BoardEl>

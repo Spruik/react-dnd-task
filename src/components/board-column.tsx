@@ -12,6 +12,7 @@ type BoardColumnProps = {
   key: string,
   column: any,
   items: any
+  onEditTask: any
 }
 
 // Define types for board column content style properties
@@ -66,7 +67,10 @@ export const BoardColumn: React.FC<BoardColumnProps> = (props) => {
             ref={provided.innerRef}
             isDraggingOver={snapshot.isDraggingOver}
           >
-            {props.items.map((item: any, index: number) => <BoardItem key={item.id} item={item} index={index} />)}
+            {props.items.map((item: any, index: number) => 
+            <BoardItem key={item.id} 
+            item={item} index={index} 
+            handleOnEdit={props.onEditTask} />)}
             {provided.placeholder}
           </BoardColumnContent>
         )}

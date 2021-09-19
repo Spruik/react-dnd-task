@@ -1,16 +1,19 @@
-import * as React from 'react'
+import * as React from 'react' 
+import {useRef, useEffect} from 'react'
 import { Draggable } from 'react-beautiful-dnd'
 import styled from 'styled-components'
 import { SvgIcon } from 'material-ui';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { InputComponent } from './input-component'
 
 
 // Define types for board item element properties
 type BoardItemProps = {
   index: number
   item: any
+  handleOnEdit: any
 }
 
 // Define types for board item element style properties
@@ -50,10 +53,30 @@ const IconsContainer = styled.div`
     text-align: right;
   }
 
+  .editing {
+    color: red;
+  }
+
 `
 
 // Create and export the BoardItem component
 export const BoardItem = (props: BoardItemProps) => {
+    const [isEditing,setIsEditing] = React.useState(false)
+    const [content, setContent] = React.useState(props.item.content)
+    console.log("content", content)
+
+
+    const onEditButtonClick = () => {
+      console.log("BUTTON CLICKED!")
+      if (isEditing) {
+        props.handleOnEdit(props.item.id, content)
+      }
+      setIsEditing(!isEditing)
+    }
+
+    const handleContentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setContent(e.target.value)
+    }
     return <Draggable draggableId={props.item.id} index={props.index}>
       {(provided, snapshot) => (
         <BoardItemEl
@@ -62,12 +85,22 @@ export const BoardItem = (props: BoardItemProps) => {
           ref={provided.innerRef}
           isDragging={snapshot.isDragging}
         >
+          {isEditing ? (
+          <InputComponent 
+          content={content} 
+          isEditing={isEditing}
+          setIsEditing={setIsEditing} 
+          handleEdit={handleContentChange}/>
+          ) : (
           <span>
-          {props.item.content}
+          {content}
           </span>
+          )}
           <IconsContainer>
             <div className="edit">
-            <EditIcon/>
+            <EditIcon className={isEditing ? "editing" : ""} 
+            onClick={onEditButtonClick} 
+            onBlur={(e) => setIsEditing(!isEditing)} />
             </div>
 
             <div className="save">
