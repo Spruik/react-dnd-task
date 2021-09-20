@@ -31,7 +31,7 @@ function useOutsideAlerter(props: InputComponentProps, ref: any) {
             document.removeEventListener("mousedown", handleClickOutside);
            
         };
-    }, [ref]);
+    }, [props, ref]);
 }
 
 /**

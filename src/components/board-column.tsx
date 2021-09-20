@@ -1,7 +1,6 @@
-import React, {useState} from 'react'
+import React from 'react'
 import { Droppable, Draggable } from 'react-beautiful-dnd'
 import styled from 'styled-components'
-import { Button } from 'react-bootstrap';
 
 // Import BoardItem component
 import { BoardItem } from './board-item'
@@ -11,8 +10,8 @@ import { BoardItem } from './board-item'
 type BoardColumnProps = {
   key: string,
   column: any,
-  items: any
-  handleEditItem: any,
+  items: any,
+  handleDeleteItem: any,
   index: number
   // saveData: any
 }
@@ -77,11 +76,13 @@ export const BoardColumn: React.FC<BoardColumnProps> = (props) => {
             {props.items.map((item: any, index: number) => 
             <BoardItem 
               key={item.id} 
-              item={item} 
+              item={item}
+              column={props.column} 
               index={index}
-              handleEditItem={props.handleEditItem} 
               // saveData={props.saveData}
-            />)}
+              handleDeleteItem={props.handleDeleteItem}
+            />
+            )}
             {provided.placeholder}
           </BoardColumnContent>
         )}

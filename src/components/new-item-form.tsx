@@ -1,5 +1,4 @@
-import React, { useState, useRef } from 'react'
-import { useFocus } from '../utils/useFocus'
+import React, { useState } from 'react'
 import { Button, TextField } from '@mui/material';
 import styled from 'styled-components'
 
@@ -7,39 +6,6 @@ interface NewItemFormProps {
     // handleAddItem: (e: React.FormEvent) => void;
     handleAddItem: (e: React.FormEvent, newTask: string) => void;
 }
-const initialValues = {
-    text: ""
-}
-
-// //Material UI styles
-// const useStyles = makeStyles((theme?: any) => ({
-//     input: {
-//         backgroundColor: '#f2f2f2',
-//         paddingTop: '8px',
-//         width: '100%',
-//         marginBottom: '1em'
-//     },
-//     form: {
-//         display: 'flex',
-//         margin: 'auto',
-//         width: '100%;',
-//         justifyContent: 'center',
-//         position: 'relative',
-//         alignItems: 'center',
-//         marginBottom: '2em',
-//         boxShadow: 'inset 0 0 5px rgba(0,0,0,1)'
-//     },
-//     button: {
-//         width: '200px',
-//         maxWidth: '50%',
-//         height: '63px',
-//         right: 0
-//     },
-//     centerText: {
-//         textAlign: "center"
-//     }
-// })
-// )
 
 const NewItemInputWrapper = styled.div`
 display: flex;
@@ -85,12 +51,12 @@ form#add-new-item, input#new-task-content {
 
 
 
-const NewItemForm: React.FC<NewItemFormProps> = ({ handleAddItem }) => {
+const NewItemForm = ( props: NewItemFormProps) => {
     const [newTask, setNewTask] = useState<string>("")
 
     return (
         <NewItemInputWrapper>
-            <form id="add-new-item" onSubmit={(e) => handleAddItem(e, newTask)}>
+            <form id="add-new-item" onSubmit={(e) => props.handleAddItem(e, newTask)}>
                 <TextField
                     id="new-task-content"
                     variant="filled"

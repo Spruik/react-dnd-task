@@ -2,6 +2,7 @@ import * as React from 'react'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import styled from 'styled-components'
 import NewItemForm from './new-item-form'
+import {DeleteAlertDialog} from './delete-alert-dialog'
 
 // Import data for board
 import { initialBoardData } from '../data/board-initial-data'
@@ -139,7 +140,7 @@ export class Board extends React.Component {
 
     const lastItemNumAsInt = parseInt(lastItemNum)
 
-    if (lastItemNumAsInt === NaN) {
+    if (isNaN(lastItemNumAsInt)) {
       return 1
     }
 
@@ -150,7 +151,6 @@ export class Board extends React.Component {
     event.preventDefault()
     console.log("Hello!", task)
     const index = this.getLastItem()
-    const items = this.state.items
     // console.log("LAST ITEM NUMBER IS", `${index}: ${task}`)
 
     const newKey = `item-${index}`
@@ -178,38 +178,47 @@ export class Board extends React.Component {
     }
   }
 
-  handleEditItem = (itemId: string, content: string) => {
-    console.log("TASK TO EDIT", itemId, content)
-    // const items = this.state.items[itemId]
-    // const editedState = {
-    //   ...items,
-    //   [itemId]: {
-    //     id: itemId,
-    //     content: content
+  handleDeleteItem = (event: React.FormEvent, itemId: string, column: any) => {
+    console.log("COLUMN", column)
+    const stateClone = {...this.state}
+    console.log("STATECLONE", stateClone)
+    const columns = {...stateClone.columns}
+    const items = {...stateClone.items}
+
+    const newColumns = Object.values(columns).map(i => {
+      console.log("WHAT IS I", i)
+      
+      const newItemsIds: string[] = i.itemsIds;
+      //If there are items in the column, and the column matches what I've clicked
+      if (newItemsIds.length > 0 && i.id === column.id) {
+        newItemsIds.splice(newItemsIds.indexOf(itemId), 1);
+      }
+      return { ...i, itemsIds: newItemsIds }
+    })
+
+    console.log("INDEX OF", newColumns )
+
+    const makeArray = Object.entries(items).filter(item => item[1].id !== itemId)
+    const newObj = Object.fromEntries(makeArray)
+    // this.setState({
+    //   ...stateClone,
+    //   columns: {
+    //     [column.id]: 
     //   }
-    // }
-    // console.log("EDITED STATE", editedState)
-    // this.setState(editedState)
+    // })
+
+    this.setState({
+      ...stateClone,
+      items: newObj
+    })
   }
 
-  // saveData = (item: string, content: string) => {
-  //   console.log("ITEM", item, "DATA to save", content)
-  //   const newState = {
-  //     ...this.state,
-  //     items: {
-  //       ...this.state.items,
-  //       [item]: {
-  //         [item]: content
-  //       }
-  //     }
-  //   }
-  //   this.setState(newState)
-  // }
+
 
   render() {
-    console.log("NEW STATE", this.state)
+    
     return (
-
+      <>
       <DragDropContext onDragEnd={this.onDragEnd}>
         <NewItemForm handleAddItem={this.handleAddItem}/> 
         <Droppable 
@@ -231,8 +240,8 @@ export class Board extends React.Component {
                     key={column.id} 
                     column={column}
                     items={items}
-                    index={index} 
-                    handleEditItem={this.handleEditItem}
+                    index={index}
+                    handleDeleteItem={this.handleDeleteItem}
                     // saveData={this.saveData}
                     />
               })}
@@ -242,5 +251,6 @@ export class Board extends React.Component {
             </Droppable>
             
             </DragDropContext>
+            </>
     )}
 }
