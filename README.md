@@ -29,16 +29,16 @@ Submit a Pull Request for you changes.
 
 
 ## Added Dependencies
-- Material UI
-Stying
-//With NPM
+- ## Material UI
+Styling
+- ### With NPM
 npm install @mui/material @emotion/react @emotion/styled
 
-// with yarn
+### with yarn
 yarn add @mui/material @emotion/react @emotion/styled
 
-Icons 
+## Material UI Icons 
 npm install @mui/icons-material
 
-.dotenv
+## .dotenv
 Added SKIP_PREFLIGHT_CHECK=true to force babel to work
