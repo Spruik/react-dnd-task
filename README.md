@@ -30,7 +30,7 @@ Submit a Pull Request for you changes.
 
 ## Added Dependencies
 - ## Material UI
-Styling
+Added Material UI as a framework for styling. Useful for input fields and buttons 
 - ### With NPM
 npm install @mui/material @emotion/react @emotion/styled
 
