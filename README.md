@@ -30,12 +30,12 @@ Submit a Pull Request for you changes.
 
 ## Added Dependencies
 - ## Material UI
-Added Material UI as a framework for styling. Useful for input fields and buttons 
+Added Material UI as a framework for styling. Useful for input fields and buttons. 
 - ### With NPM
-npm install @mui/material @emotion/react @emotion/styled
+npm install @mui/material @emotion/react @emotion/styled.
 
 ### with yarn
-yarn add @mui/material @emotion/react @emotion/styled
+yarn add @mui/material @emotion/react @emotion/styled.
 
 ## Material UI Icons 
 npm install @mui/icons-material
