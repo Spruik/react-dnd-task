@@ -2,7 +2,6 @@ import * as React from 'react'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import styled from 'styled-components'
 import NewItemForm from './new-item-form'
-import {DeleteAlertDialog} from './delete-alert-dialog'
 
 // Import data for board
 import { initialBoardData } from '../data/board-initial-data'
