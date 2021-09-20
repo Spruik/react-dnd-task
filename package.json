@@ -3,10 +3,19 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.4.1",
+    "@emotion/styled": "^11.3.0",
+    "@material-ui/icons": "^4.11.2",
+    "@mui/icons-material": "^5.0.0",
+    "@mui/material": "^5.0.0",
+    "@mui/styles": "^5.0.0",
+    "@types/material-ui": "^0.21.9",
+    "babel-eslint": "10.0.1",
+    "dotenv": "^10.0.0",
     "react": "^17.0.2",
-    "react-beautiful-dnd": "^11.0.3",
     "react-dom": "^17.0.2",
-    "styled-components": "^4.2.0"
+    "styled-components": "^4.2.0",
+    "styled-props": "^1.1.2"
   },
   "devDependencies": {
     "@types/jest": "24.0.13",
@@ -15,14 +24,17 @@
     "@types/react-beautiful-dnd": "^11.0.2",
     "@types/react-dom": "16.8.4",
     "@types/styled-components": "^4.1.15",
+    "fork-ts-checker-webpack-plugin": "^6.3.3",
+    "react-beautiful-dnd": "^13.1.0",
     "react-scripts": "3.0.1",
-    "typescript": "^4.4.2"
+    "typescript": "^4.4.3"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "json-server": "npx json-server --watch=true src/data/board-initial-data.ts --port 8000"
   },
   "eslintConfig": {
     "extends": [
